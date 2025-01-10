@@ -4,6 +4,10 @@ const adminController = {
   // Obtener todos los usuarios
   async obtenerUsuarios(req, res) {
     try {
+
+
+
+      
       const usuarios = await pool.query('SELECT id_usuario, nombre, correo, rol FROM usuarios');
       res.status(200).json(usuarios.rows);
     } catch (error) {
