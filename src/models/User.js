@@ -115,7 +115,7 @@ const User = {
     }
   },
 
-  
+///sexo
   async getUserProfile({ req, res }) {
     const { id } = req.params; 
     try {
