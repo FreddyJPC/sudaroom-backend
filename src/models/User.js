@@ -115,6 +115,7 @@ const User = {
     }
   },
 
+  
   async getUserProfile({ req, res }) {
     const { id } = req.params; 
     try {
