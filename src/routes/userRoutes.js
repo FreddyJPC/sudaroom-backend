@@ -22,6 +22,7 @@ router.post('/register', userController.register);
 // Ruta para iniciar sesión
 router.post('/login', userController.login);
 
+
 // Ruta para obtener todos los usuarios (Redundante, se ha simplificado y protegido arriba)
 // Nota: Se eliminan las rutas duplicadas para evitar errores al registrar múltiples manejadores de la misma ruta
 
