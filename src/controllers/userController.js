@@ -11,35 +11,30 @@ const userController = {
   async register(req, res) { 
     try {
       console.log('Datos recibidos en el cuerpo de la solicitud:', req.body);
-
-      const { nombre, correo, contraseña, rol } = req.body;
+      const { nombre, correo, contraseña, rol, carrera } = req.body;
 
       if (!nombre || !correo || !contraseña || !rol) {
         return res.status(400).json({ message: 'Todos los campos son obligatorios.' });
       }
-
-      const existingUser = await User.findByEmail(correo);
-      if (existingUser) {
-        return res.status(400).json({ message: 'El correo ya está en uso.' });
-      }
-
+      
       const hashedPassword = await bcrypt.hash(contraseña, 10);
-
+      
       const newUser = await User.create({
         nombre,
         correo,
         password: hashedPassword,
         rol,
+        carrera, // Asegúrate de enviar este campo
       });
       
-      const normalizedRole = rol.toLowerCase();
-
       res.status(201).json({ message: 'Usuario creado con éxito.', usuario: newUser });
     } catch (error) {
       console.error('Error al registrar usuario:', error);
       res.status(500).json({ message: 'Error al registrar usuario.', error: error.message });
     }
   },
+  
+  
 
   async login(req, res) {
     try {
@@ -187,5 +182,6 @@ const userController = {
     }
   },
 };
+
 
 module.exports = userController;

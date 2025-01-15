@@ -100,56 +100,18 @@ const User = {
   },
 
   // Crear un nuevo usuario
-  async create({ nombre, correo, password, rol }) {
+  async create({ nombre, correo, password, rol, carrera }) {
     try {
       const result = await pool.query(
-        `INSERT INTO usuarios (nombre, correo, password, rol) 
-         VALUES ($1, $2, $3, $4) 
+        `INSERT INTO usuarios (nombre, correo, password, rol, carrera) 
+         VALUES ($1, $2, $3, $4, $5) 
          RETURNING *`,
-        [nombre, correo, password, rol]
+        [nombre, correo, password, rol, carrera]
       );
-      return result.rows[0]; // Devuelve el usuario creado
+      return result.rows[0];
     } catch (error) {
       console.error("Error en create:", error);
       throw error;
-    }
-  },
-
-  async getUserProfile({ req, res }) {
-    const { id } = req.params; 
-    try {
-      
-      const result = await pool.query(
-        "SELECT * FROM usuarios WHERE id_usuario = $1",
-        [id]
-      );
-      const user = result.rows[0]; 
-
-      if (!user) {
-        return res.status(404).json({ message: "Usuario no encontrado" });
-      }
-
-      if (user.rol === "profesor") {
-        const horariosResult = await pool.query(
-          `SELECT dia, hora_inicio, hora_fin 
-           FROM horarios 
-           WHERE id_usuario = $1`,
-          [id]
-        );
-        const horarios = horariosResult.rows;
-
-        return res.json({
-          ...user,
-          horarios, 
-        });
-      }
-
-      res.json(user);
-    } catch (error) {
-      console.error("Error al obtener el perfil del usuario:", error);
-      res
-        .status(500)
-        .json({ message: "Error al obtener el perfil del usuario" });
     }
   },
 };
