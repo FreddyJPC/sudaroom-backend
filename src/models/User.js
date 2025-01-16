@@ -114,45 +114,6 @@ const User = {
       throw error;
     }
   },
-
-///sexo
-  async getUserProfile({ req, res }) {
-    const { id } = req.params; 
-    try {
-      
-      const result = await pool.query(
-        "SELECT * FROM usuarios WHERE id_usuario = $1",
-        [id]
-      );
-      const user = result.rows[0]; 
-
-      if (!user) {
-        return res.status(404).json({ message: "Usuario no encontrado" });
-      }
-
-      if (user.rol === "profesor") {
-        const horariosResult = await pool.query(
-          `SELECT dia, hora_inicio, hora_fin 
-           FROM horarios 
-           WHERE id_usuario = $1`,
-          [id]
-        );
-        const horarios = horariosResult.rows;
-
-        return res.json({
-          ...user,
-          horarios, 
-        });
-      }
-
-      res.json(user);
-    } catch (error) {
-      console.error("Error al obtener el perfil del usuario:", error);
-      res
-        .status(500)
-        .json({ message: "Error al obtener el perfil del usuario" });
-    }
-  },
 };
 
 module.exports = User;
