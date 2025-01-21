@@ -80,16 +80,26 @@ const userController = {
     try {
       const { page = 1, limit = 10 } = req.query;
       const offset = (page - 1) * limit;
-
+  
       const users = await User.getAll(Number(limit), Number(offset));
+  
+      if (!Array.isArray(users)) {
+        return res.status(500).json({ message: "Datos de usuarios inválidos." });
+      }
+  
       res.status(200).json(users);
     } catch (error) {
       console.error("Error al obtener usuarios:", error);
-      res
-        .status(500)
-        .json({ message: "Error al obtener usuarios.", error: error.message });
+  
+      // Evitamos enviar más de una respuesta
+      if (!res.headersSent) {
+        res
+          .status(500)
+          .json({ message: "Error al obtener usuarios.", error: error.message });
+      }
     }
   },
+  
 
   async deleteUser(req, res) {
     try {

@@ -34,12 +34,13 @@ const User = {
         "SELECT id_usuario, nombre, correo, rol, fecha_creacion FROM usuarios LIMIT $1 OFFSET $2",
         [limit, offset]
       );
-      return result.rows;
+      return result.rows || []; // Devuelve un arreglo vacío si no hay resultados
     } catch (error) {
       console.error("Error en getAll:", error);
-      throw error;
+      throw error; // Lanza el error para que el controlador lo maneje
     }
   },
+  
 
   async updatePassword(correo, nuevaContraseña) {
     try {
@@ -54,17 +55,6 @@ const User = {
     }
   },
 
-  async getAll() {
-    try {
-      const result = await pool.query(
-        "SELECT id_usuario, nombre, correo, rol, fecha_creacion FROM usuarios"
-      );
-      return result.rows; // Devuelve la lista de usuarios
-    } catch (error) {
-      console.error("Error en getAll:", error);
-      throw error;
-    }
-  },
 
   async update(id, { nombre, correo }) {
     try {
