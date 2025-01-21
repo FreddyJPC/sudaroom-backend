@@ -115,17 +115,15 @@ const User = {
     }
   },
 
-
-  ///Nuevo agregado 
+  ///Nuevo agregado
   async getUserProfile({ req, res }) {
-    const { id } = req.params; 
+    const { id } = req.params;
     try {
-      
       const result = await pool.query(
         "SELECT * FROM usuarios WHERE id_usuario = $1",
         [id]
       );
-      const user = result.rows[0]; 
+      const user = result.rows[0];
 
       if (!user) {
         return res.status(404).json({ message: "Usuario no encontrado" });
@@ -142,7 +140,7 @@ const User = {
 
         return res.json({
           ...user,
-          horarios, 
+          horarios,
         });
       }
 
@@ -151,9 +149,22 @@ const User = {
       console.error("Error al obtener el perfil del usuario:", error);
       res
         .status(500)
-        .json({ message: "Error al obtener el perfil del usuario" });
-    }
-  },
+        .json({ message: "Error al obtener el perfil del usuario" });
+    }
+  },
+
+  async getById(id) {
+    try {
+      const result = await pool.query(
+        "SELECT * FROM usuarios WHERE id_usuario = $1",
+        [id]
+      );
+      return result.rows[0]; // Devuelve el usuario encontrado o undefined
+    } catch (error) {
+      console.error("Error en getById:", error);
+      throw error;
+    }
+  },
 };
 
 module.exports = User;
