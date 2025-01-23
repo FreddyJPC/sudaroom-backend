@@ -34,12 +34,14 @@ const User = {
         "SELECT id_usuario, nombre, correo, rol, fecha_creacion FROM usuarios LIMIT $1 OFFSET $2",
         [limit, offset]
       );
-      return result.rows || []; // Devuelve un arreglo vacío si no hay resultados
+      console.log("Resultado de la base de datos:", result.rows);
+      return result.rows || [];
     } catch (error) {
       console.error("Error en getAll:", error);
-      throw error; // Lanza el error para que el controlador lo maneje
+      throw error;
     }
   },
+  
   
 
   async updatePassword(correo, nuevaContraseña) {

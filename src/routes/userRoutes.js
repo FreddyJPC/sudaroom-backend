@@ -1,32 +1,26 @@
 const express = require('express');
 const userController = require('../controllers/userController');
-const { verifyToken, requireRole } = require('../middlewares/authMiddleware'); // Corrige la importación
+const { verifyToken, requireRole } = require('../middlewares/authMiddleware'); // Importar los middlewares correctamente
 
 const router = express.Router();
 
-router.post('/forgot-password', userController.forgotPassword);
-router.post('/reset-password/:token', userController.resetPassword);
+/**
+ * Rutas relacionadas con los usuarios.
+ */
 
-// Ruta para actualizar un usuario (requiere autenticación)
-router.put('/:id', verifyToken, userController.updateUser); // Proteger con verifyToken
+// Rutas públicas
+router.post('/register', userController.register); // Registro de usuarios
+router.post('/login', userController.login); // Inicio de sesión
+router.post('/forgot-password', userController.forgotPassword); // Solicitar recuperación de contraseña
+router.post('/reset-password/:token', userController.resetPassword); // Restablecer contraseña
 
-// Solo los administradores pueden listar usuarios
-router.get('/', verifyToken, requireRole('administrador'), userController.getAllUsers); // Solo administradores
+// Rutas protegidas
+router.get('/', verifyToken, requireRole('administrador'), userController.getAllUsers); // Obtener lista de usuarios (solo administradores)
+router.get('/:id', verifyToken, userController.getUserProfile); // Obtener perfil del usuario autenticado
+router.put('/:id', verifyToken, userController.updateUser); // Actualizar datos de usuario
+router.delete('/:id', verifyToken, requireRole('administrador'), userController.deleteUser); // Eliminar usuario (solo administradores)
+router.get('/carreras', userController.getCarreras); // Ruta para obtener las carreras
 
-// Ruta para eliminar un usuario (solo administradores)
-router.delete('/:id', verifyToken, requireRole('administrador'), userController.deleteUser); // Solo administradores
-
-// Ruta para registrar usuario
-router.post('/register', userController.register);
-
-// Ruta para iniciar sesión
-router.post('/login', userController.login);
-
-router.get('/:id', verifyToken, userController.getUserProfile); // Asegúrate de que el controlador esté definido
-
-
-// Ruta para obtener todos los usuarios (Redundante, se ha simplificado y protegido arriba)
-// Nota: Se eliminan las rutas duplicadas para evitar errores al registrar múltiples manejadores de la misma ruta
 
 /**
  * @swagger
