@@ -266,19 +266,6 @@ const userController = {
       }
     },
 
-    // Obtener lista de carreras
-async getCarreras(req, res) {
-  try {
-    const result = await pool.query('SELECT DISTINCT carrera FROM usuarios WHERE carrera IS NOT NULL');
-    const carreras = result.rows.map((row) => row.carrera);
-    res.status(200).json({ carreras });
-  } catch (error) {
-    console.error('Error al obtener las carreras:', error);
-    res.status(500).json({ message: 'Error al obtener las carreras.', error: error.message });
-  }
-},
-
-  
 };
 
 module.exports = userController;

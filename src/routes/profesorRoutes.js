@@ -3,11 +3,8 @@ const ProfesorController = require("../controllers/profesorController");
 
 const router = express.Router();
 
-// Ruta para obtener todos los profesores
 router.get("/", ProfesorController.getAllProfesores);
-
-// Ruta para obtener un profesor por ID
 router.get("/:id", ProfesorController.getProfesorById);
-router.get("/carreras", ProfesorController.getCarreras); // Obtener todas las carreras
+router.get("/carreras", ProfesorController.getCarreras); 
 
 module.exports = router;
