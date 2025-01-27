@@ -134,6 +134,12 @@ const userController = {
         return res.status(400).json({ message: "Debes proporcionar un nombre o correo para actualizar." });
       }
 
+      const existingUser = await User.findByEmail(correo);
+      if (existingUser && existingUser.id_usuario !== parseInt(id)) {
+        return res.status(409).json({ message: "El correo ya está en uso por otro usuario." });
+      }
+
+
       const updatedUser = await User.update(id, { nombre, correo });
 
       if (!updatedUser) {
@@ -265,6 +271,53 @@ const userController = {
         res.status(500).json({ message: "Error al obtener el perfil del usuario.", error: error.message });
       }
     },
+
+    async updatePassword(req, res) {
+      const { id } = req.params;
+      const { contraseñaActual, nuevaContraseña } = req.body;
+    
+      if (!contraseñaActual || !nuevaContraseña) {
+        return res.status(400).json({ message: "Proporciona ambas contraseñas." });
+      }
+    
+      const user = await User.getById(id);
+      if (!user) {
+        return res.status(404).json({ message: "Usuario no encontrado." });
+      }
+    
+      const isPasswordValid = await bcrypt.compare(contraseñaActual, user.password);
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: "Contraseña actual incorrecta." });
+      }
+    
+      const hashedPassword = await bcrypt.hash(nuevaContraseña, 10);
+      await User.updatePassword(user.correo, hashedPassword);
+    
+      res.status(200).json({ message: "Contraseña actualizada con éxito." });
+    },
+
+    async getAuthenticatedUser(req, res) {
+      try {
+        const { id } = req.user; // Extraer el ID del usuario desde el token
+        console.log("ID del usuario autenticado:", id);
+    
+        const user = await User.getById(id); // Consultar por ID en la base de datos
+        if (!user) {
+          return res.status(404).json({ message: "Usuario no encontrado" });
+        }
+    
+        res.status(200).json(user); // Responder con los datos del usuario
+      } catch (error) {
+        console.error("Error al obtener el perfil del usuario:", error);
+        res.status(500).json({
+          message: "Error al obtener el perfil del usuario.",
+          error: error.message,
+        });
+      }
+    }
+    
+    
+    
 
 };
 

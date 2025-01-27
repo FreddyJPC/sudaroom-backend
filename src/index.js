@@ -19,6 +19,14 @@ app.use(cors());
 
 // Middleware de logging (muestra detalles de cada solicitud en la consola)
 app.use(morgan('dev'));
+const cors = require("cors");
+app.use(
+  cors({
+    origin: "http://localhost:5173", 
+    credentials: true,
+  })
+);
+
 
 // Importar rutas de profesores
 const profesorRoutes = require('./routes/profesorRoutes'); // Nueva 
