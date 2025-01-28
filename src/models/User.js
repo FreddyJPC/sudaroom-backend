@@ -34,12 +34,15 @@ const User = {
         "SELECT id_usuario, nombre, correo, rol, fecha_creacion FROM usuarios LIMIT $1 OFFSET $2",
         [limit, offset]
       );
-      return result.rows;
+      console.log("Resultado de la base de datos:", result.rows);
+      return result.rows || [];
     } catch (error) {
       console.error("Error en getAll:", error);
       throw error;
     }
   },
+  
+  
 
   async updatePassword(correo, nuevaContraseña) {
     try {
@@ -54,17 +57,6 @@ const User = {
     }
   },
 
-  async getAll() {
-    try {
-      const result = await pool.query(
-        "SELECT id_usuario, nombre, correo, rol, fecha_creacion FROM usuarios"
-      );
-      return result.rows; // Devuelve la lista de usuarios
-    } catch (error) {
-      console.error("Error en getAll:", error);
-      throw error;
-    }
-  },
 
   async update(id, { nombre, correo }) {
     try {
@@ -116,48 +108,48 @@ const User = {
   },
 
   ///Nuevo agregado
-  async getUserProfile({ req, res }) {
-    const { id } = req.params;
-    try {
-      const result = await pool.query(
-        "SELECT * FROM usuarios WHERE id_usuario = $1",
-        [id]
-      );
-      const user = result.rows[0];
+  // async getUserProfile({ req, res }) {
+  //   const { id } = req.params;
+  //   try {
+  //     const result = await pool.query(
+  //       "SELECT * FROM usuarios WHERE id_usuario = $1",
+  //       [id]
+  //     );
+  //     const user = result.rows[0];
 
-      if (!user) {
-        return res.status(404).json({ message: "Usuario no encontrado" });
-      }
+  //     if (!user) {
+  //       return res.status(404).json({ message: "Usuario no encontrado" });
+  //     }
 
-      if (user.rol === "profesor") {
-        const horariosResult = await pool.query(
-          `SELECT dia, hora_inicio, hora_fin 
-           FROM horarios 
-           WHERE id_usuario = $1`,
-          [id]
-        );
-        const horarios = horariosResult.rows;
+  //     if (user.rol === "profesor") {
+  //       const horariosResult = await pool.query(
+  //         `SELECT dia, hora_inicio, hora_fin 
+  //          FROM horarios 
+  //          WHERE id_usuario = $1`,
+  //         [id]
+  //       );
+  //       const horarios = horariosResult.rows;
 
-        return res.json({
-          ...user,
-          horarios,
-        });
-      }
+  //       return res.json({
+  //         ...user,
+  //         horarios,
+  //       });
+  //     }
 
-      res.json(user);
-    } catch (error) {
-      console.error("Error al obtener el perfil del usuario:", error);
-      res
-        .status(500)
-        .json({ message: "Error al obtener el perfil del usuario" });
-    }
-  },
+  //     res.json(user);
+  //   } catch (error) {
+  //     console.error("Error al obtener el perfil del usuario:", error);
+  //     res
+  //       .status(500)
+  //       .json({ message: "Error al obtener el perfil del usuario" });
+  //   }
+  // },
 
   async getById(id) {
     try {
       const result = await pool.query(
-        "SELECT * FROM usuarios WHERE id_usuario = $1",
-        [id]
+        "SELECT id_usuario, nombre, correo, rol, carrera FROM usuarios WHERE id_usuario = $1",
+        [id] // Asegúrate de que aquí se pase un número entero
       );
       return result.rows[0]; // Devuelve el usuario encontrado o undefined
     } catch (error) {
@@ -165,6 +157,7 @@ const User = {
       throw error;
     }
   },
+  
 };
 
 module.exports = User;

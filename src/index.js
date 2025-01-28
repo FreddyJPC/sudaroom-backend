@@ -19,17 +19,29 @@ app.use(cors());
 
 // Middleware de logging (muestra detalles de cada solicitud en la consola)
 app.use(morgan('dev'));
+const cors = require("cors");
+app.use(
+  cors({
+    origin: "http://localhost:5173", 
+    credentials: true,
+  })
+);
 
+
+// Importar rutas de profesores
+const profesorRoutes = require('./routes/profesorRoutes'); // Nueva 
 // Importar rutas
 const userRoutes = require('./routes/userRoutes'); // Rutas de usuarios
-const tutoriaRoutes = require('./routes/tutoriaRoutes'); // Rutas de tutorías
 const classRoutes = require('./routes/ClassRoutes'); // Rutas de clases
 const adminRoutes = require('./routes/adminRoutes');
 
-
 // Middleware de manejo de rutas
 app.use('/api/users', userRoutes); // Rutas para usuarios
-app.use('/api/tutorias', tutoriaRoutes); // Rutas para tutorías
+app.use('/api/clases', classRoutes); // Rutas para clases
+app.use('/api/admin', adminRoutes);
+app.use('/api/profesores', profesorRoutes); // Nueva ruta de profesores
+// Middleware de manejo de rutas
+app.use('/api/users', userRoutes); // Rutas para usuarios
 app.use('/api/clases', classRoutes); // Rutas para clases
 app.use('/api/admin', adminRoutes);
 

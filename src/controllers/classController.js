@@ -129,7 +129,7 @@ const classController = {
           SELECT c.id_clase, c.titulo, c.descripcion, c.fecha_hora, c.duracion, c.capacidad_maxima, c.estado, 
                  p.nombre AS profesor, COUNT(r.id_reserva) AS reservas
           FROM clases c
-          JOIN usuarios p ON c.id_profesor = p.id
+          JOIN usuarios p ON c.id_profesor = p.id_usuario
           LEFT JOIN reservas r ON c.id_clase = r.id_clase
           WHERE c.id_clase = $1
           GROUP BY c.id_clase, p.nombre
