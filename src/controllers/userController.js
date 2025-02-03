@@ -124,29 +124,29 @@ const userController = {
 
   async updateUser(req, res) {
     try {
-      console.log("Solicitud para actualizar usuario recibida:", req.params, req.body);
-
-      const { id } = req.params;
+      console.log("Solicitud para actualizar usuario recibida:", req.user, req.body);
+      
+      // Usar el id de la URL o, en su defecto, el del token
+      const id = req.params.id || req.user.id;
       const { nombre, correo } = req.body;
-
+    
       if (!nombre && !correo) {
         console.warn(`Actualización inválida para usuario ID ${id}: Campos vacíos.`);
         return res.status(400).json({ message: "Debes proporcionar un nombre o correo para actualizar." });
       }
-
+    
       const existingUser = await User.findByEmail(correo);
       if (existingUser && existingUser.id_usuario !== parseInt(id)) {
         return res.status(409).json({ message: "El correo ya está en uso por otro usuario." });
       }
-
-
+    
       const updatedUser = await User.update(id, { nombre, correo });
-
+    
       if (!updatedUser) {
         console.warn(`Usuario no encontrado para actualización: ID ${id}`);
         return res.status(404).json({ message: "Usuario no encontrado." });
       }
-
+    
       console.log("Usuario actualizado exitosamente:", updatedUser);
       res.status(200).json({ message: "Usuario actualizado con éxito.", usuario: updatedUser });
     } catch (error) {
@@ -154,6 +154,7 @@ const userController = {
       res.status(500).json({ message: "Error al actualizar usuario.", error: error.message });
     }
   },
+  
 
 
     // Recuperación de contraseña
