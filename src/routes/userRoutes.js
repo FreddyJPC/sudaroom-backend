@@ -14,6 +14,9 @@ router.post("/reset-password/:token", userController.resetPassword);
 // Ruta para obtener el perfil del usuario autenticado
 router.get("/me", verifyToken, userController.getAuthenticatedUser);
 
+// Nueva ruta para actualizar el perfil del usuario autenticado
+router.put("/me", verifyToken, userController.updateUser);
+
 
 // Rutas protegidas con ID
 router.get("/:id", verifyToken, userController.getUserProfile);
