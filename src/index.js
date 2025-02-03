@@ -20,23 +20,24 @@ app.use(cors());
 // Middleware de logging (muestra detalles de cada solicitud en la consola)
 app.use(morgan('dev'));
 
-
-// Importar rutas de profesores
-const profesorRoutes = require('./routes/profesorRoutes'); // Nueva 
 // Importar rutas
-const userRoutes = require('./routes/userRoutes'); // Rutas de usuarios
-const classRoutes = require('./routes/ClassRoutes'); // Rutas de clases
-const adminRoutes = require('./routes/adminRoutes');
+const userRoutes = require('./routes/userRoutes');          // Rutas de usuarios
+const classRoutes = require('./routes/ClassRoutes');        // Rutas de clases
+const adminRoutes = require('./routes/adminRoutes');        // Rutas de administrador
+const profesorRoutes = require('./routes/profesorRoutes'); // Rutas de profesores
+const solicitudRoutes = require('./routes/solicitudRoutes'); // ✅ Nueva ruta de solicitudes
+const notificationRoutes = require('./routes/notificationRoutes');
+
+
+
 
 // Middleware de manejo de rutas
-app.use('/api/users', userRoutes); // Rutas para usuarios
-app.use('/api/clases', classRoutes); // Rutas para clases
-app.use('/api/admin', adminRoutes);
-app.use('/api/profesores', profesorRoutes); // Nueva ruta de profesores
-// Middleware de manejo de rutas
-app.use('/api/users', userRoutes); // Rutas para usuarios
-app.use('/api/clases', classRoutes); // Rutas para clases
-app.use('/api/admin', adminRoutes);
+app.use('/api/notificaciones', notificationRoutes);
+app.use('/api/users', userRoutes);            // Rutas para usuarios
+app.use('/api/clases', classRoutes);          // Rutas para clases
+app.use('/api/admin', adminRoutes);           // Rutas para administrador
+app.use('/api/profesores', profesorRoutes);   // Rutas para profesores
+app.use('/api/solicitudes', solicitudRoutes); // ✅ Rutas para solicitudes de tutoría
 
 // Ruta principal
 app.get('/', (req, res) => {
