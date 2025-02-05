@@ -2,18 +2,15 @@ const Clase = require('../models/Clase');
 const pool = require('../config/db');
 
 const classController = {
-  // Crear una clase
   async create(req, res) {
     try {
       const { titulo, descripcion, fecha_hora, duracion, capacidad_maxima, estado, carrera } = req.body;
-      const id_profesor = req.user.id; // Obtenemos el id del profesor del token
+      const id_profesor = req.user.id;
   
-      // Validar datos requeridos
       if (!titulo || !fecha_hora || !carrera) {
         return res.status(400).json({ message: 'El título, la fecha/hora y la carrera son obligatorios.' });
       }
   
-      // Validar que la carrera esté en la lista permitida
       const carrerasPermitidas = [
         'Desarrollo de Software',
         'Diseño Gráfico',
@@ -27,9 +24,13 @@ const classController = {
         'Educación',
         'Talento Humano',
       ];
+  
       if (!carrerasPermitidas.includes(carrera)) {
         return res.status(400).json({ message: 'Carrera no válida.' });
       }
+  
+      // Estado por defecto: 'disponible'
+      const estadoClase = estado || 'disponible';
   
       const nuevaClase = await Clase.create({
         titulo,
@@ -37,18 +38,19 @@ const classController = {
         fecha_hora,
         duracion,
         capacidad_maxima,
-        estado,
+        estado: estadoClase,
         id_profesor,
         carrera,
       });
+  
       res.status(201).json({ message: 'Clase creada exitosamente.', clase: nuevaClase });
+  
     } catch (error) {
       console.error('Error al crear clase:', error);
       res.status(500).json({ message: 'Error al crear clase.', error: error.message });
     }
   },
   
-
   // Listar clases de un profesor
   async listByProfessor(req, res) {
     try {
@@ -61,19 +63,20 @@ const classController = {
     }
   },
 
-  // Editar una clase
-  async update(req, res) {
-    try {
-      const { id_clase } = req.params;
-      const { titulo, descripcion, fecha_hora, duracion, capacidad_maxima, estado } = req.body;
+    // Editar una clase
+    async update(req, res) {
+      try {
+        const { id_clase } = req.params;
+        const { titulo, descripcion, fecha_hora, duracion, capacidad_maxima, estado, carrera } = req.body; // Agregado "carrera"
 
-      const claseActualizada = await Clase.update(id_clase, { titulo, descripcion, fecha_hora, duracion, capacidad_maxima, estado });
-      res.status(200).json({ message: 'Clase actualizada exitosamente.', clase: claseActualizada });
-    } catch (error) {
-      console.error('Error al actualizar clase:', error);
-      res.status(500).json({ message: 'Error al actualizar clase.', error: error.message });
-    }
-  },
+        const claseActualizada = await Clase.update(id_clase, { titulo, descripcion, fecha_hora, duracion, capacidad_maxima, estado, carrera });
+        res.status(200).json({ message: 'Clase actualizada exitosamente.', clase: claseActualizada });
+      } catch (error) {
+        console.error('Error al actualizar clase:', error);
+        res.status(500).json({ message: 'Error al actualizar clase.', error: error.message });
+      }
+    },
+
 
   // Eliminar una clase
   async delete(req, res) {
